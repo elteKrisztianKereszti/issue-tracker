@@ -1,15 +1,9 @@
 package hu.elte.alkfejl.issuetracker.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.*;
+import java.util.List;
+import lombok.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "USERS")
@@ -19,6 +13,11 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity {
 
+    @OneToMany(targetEntity = Issue.class, mappedBy = "user") 
+    @JsonIgnoreProperties("user") 
+    @JsonIgnore
+    private List<Issue> issues; 
+    
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -29,7 +28,7 @@ public class User extends BaseEntity {
     private String password;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Role role;
 
     public enum Role {

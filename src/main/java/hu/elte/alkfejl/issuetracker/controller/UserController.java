@@ -5,6 +5,7 @@
  */
 package hu.elte.alkfejl.issuetracker.controller;
 
+import hu.elte.alkfejl.issuetracker.exception.UserNotValidException;
 import hu.elte.alkfejl.issuetracker.model.User;
 import hu.elte.alkfejl.issuetracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,14 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute User user, Model model) {
-        if (userService.isValid(user)) {
+        try { 
+            userService.login(user); 
             return redirectToGreeting(user);
-        }
-        model.addAttribute("loginFailed", true);
-        return "login";
+        } 
+        catch (UserNotValidException e) { 
+            model.addAttribute("error", true); 
+            return "login"; 
+        } 
     }
 
     @GetMapping("/register")
